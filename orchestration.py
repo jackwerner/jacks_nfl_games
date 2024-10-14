@@ -73,9 +73,9 @@ if __name__ == "__main__":
         print(training_dataset.head())
         
         # Save the training dataset to a CSV file
-        filename = f'datasets/nfl_training_dataset_{year}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-        training_dataset.to_csv(filename, index=False)
-        print(f"Training dataset for {year} has been saved to '{filename}'")
+        # filename = f'datasets/nfl_training_dataset_{year}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+        # training_dataset.to_csv(filename, index=False)
+        # print(f"Training dataset for {year} has been saved to '{filename}'")
     else:
         print("Failed to build the training dataset or the dataset is empty.")
         if training_dataset is not None:

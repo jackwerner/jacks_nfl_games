@@ -23,6 +23,6 @@ if __name__ == "__main__":
     print(nfl_schedule.head())
     
     # Optionally, save the schedule to a CSV file
-    nfl_schedule.to_csv(f'nfl_schedule_{year}.csv', index=False)
-    print(f"Schedule for {year} has been saved to 'nfl_schedule_{year}.csv'")
+    # nfl_schedule.to_csv(f'nfl_schedule_{year}.csv', index=False)
+    # print(f"Schedule for {year} has been saved to 'nfl_schedule_{year}.csv'")
 

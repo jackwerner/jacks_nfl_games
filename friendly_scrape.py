@@ -106,10 +106,10 @@ if all_data:
         combined_df.drop(columns=timestamp_cols[1:], inplace=True)
     
     # Save combined data to CSV
-    combined_filename = f'datasets/nfl_combined_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
-    combined_df.to_csv(combined_filename)
-    print(f"Combined data saved to {combined_filename}")
-    print("\nCombined Dataset:")
-    print(combined_df)
+    # combined_filename = f'datasets/nfl_combined_data_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv'
+    # combined_df.to_csv(combined_filename)
+    # print(f"Combined data saved to {combined_filename}")
+    # print("\nCombined Dataset:")
+    # print(combined_df)
 else:
     print("No data was successfully scraped.")
