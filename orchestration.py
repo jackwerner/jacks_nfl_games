@@ -9,7 +9,7 @@ def standardize_team_names(df, column_name):
         'Carolina': 'CAR', 'Chicago': 'CHI', 'Cincinnati': 'CIN', 'Cleveland': 'CLE',
         'Dallas': 'DAL', 'Denver': 'DEN', 'Detroit': 'DET', 'Green Bay': 'GB',
         'Houston': 'HOU', 'Indianapolis': 'IND', 'Jacksonville': 'JAX', 'Kansas City': 'KC',
-        'LA Chargers': 'LAC', 'LA Rams': 'LAR', 'Las Vegas': 'LV', 'Miami': 'MIA',
+        'LA Chargers': 'LAC', 'LA Rams': 'LA', 'Las Vegas': 'LV', 'Miami': 'MIA',
         'Minnesota': 'MIN', 'New England': 'NE', 'New Orleans': 'NO', 'NY Giants': 'NYG',
         'NY Jets': 'NYJ', 'Philadelphia': 'PHI', 'Pittsburgh': 'PIT', 'San Francisco': 'SF',
         'Seattle': 'SEA', 'Tampa Bay': 'TB', 'Tennessee': 'TEN', 'Washington': 'WAS'

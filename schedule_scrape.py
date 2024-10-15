@@ -20,7 +20,7 @@ if __name__ == "__main__":
     nfl_schedule = get_nfl_schedule(year)
     
     # Display the first few rows of the schedule
-    print(nfl_schedule.head())
+    print(nfl_schedule.head(20))
     
     # Optionally, save the schedule to a CSV file
     # nfl_schedule.to_csv(f'nfl_schedule_{year}.csv', index=False)
