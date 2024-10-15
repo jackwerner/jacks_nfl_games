@@ -5,6 +5,7 @@ from schedule_scrape import get_nfl_schedule
 from prediction_input import load_model, get_team_stats, prepare_input_data
 from sklearn.preprocessing import StandardScaler
 import joblib
+from injury_report import display_injury_report  # Import the new function
 
 def get_upcoming_games(schedule, start_date, end_date):
     # Convert start_date and end_date to datetime64[ns]
@@ -19,6 +20,15 @@ def make_prediction(model, scaler, team_stats, home_team, away_team):
     return prediction
 
 def main():
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Go to", ["Game Predictions", "Injury Report"])
+
+    if page == "Game Predictions":
+        display_predictions()
+    elif page == "Injury Report":
+        display_injury_report()
+
+def display_predictions():
     st.title("NFL Game Predictions for the Next 7 Days")
 
     # Load the model
