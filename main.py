@@ -6,6 +6,8 @@ from prediction_input import load_model, get_team_stats, prepare_input_data
 from sklearn.preprocessing import StandardScaler
 import joblib
 from injury_report import display_injury_report, get_injury_counts
+import csv
+import io
 
 def get_color(injury_count, max_injuries):
     # Create a color gradient from green (0) to red (max_injuries)
@@ -81,6 +83,9 @@ def display_predictions():
         # Find the maximum number of injuries for color scaling
         max_injuries = max(injury_counts.values()) if injury_counts else 1
         
+        # Create a list to store prediction results
+        prediction_results = []
+        
         for _, game in upcoming_games.iterrows():
             home_team = game['home_team']
             away_team = game['away_team']
@@ -106,8 +111,35 @@ def display_predictions():
                     point_difference = -prediction
                 
                 st.write(f"Prediction: {winner} will defeat {loser} by {point_difference:.2f} points.")
+                
+                # Add prediction result to the list
+                prediction_results.append({
+                    'Date': game_date,
+                    'Home Team': home_team,
+                    'Away Team': away_team,
+                    'Predicted Winner': winner,
+                    'Predicted Point Difference': abs(point_difference),
+                    'Home Team Injuries': home_injuries,
+                    'Away Team Injuries': away_injuries
+                })
             except KeyError:
                 st.write("Unable to make prediction due to missing team data.")
+        
+        # Create a download button for CSV
+        if prediction_results:
+            csv_buffer = io.StringIO()
+            csv_writer = csv.DictWriter(csv_buffer, fieldnames=prediction_results[0].keys())
+            csv_writer.writeheader()
+            csv_writer.writerows(prediction_results)
+            
+            csv_string = csv_buffer.getvalue()
+            
+            st.download_button(
+                label="Download Predictions as CSV",
+                data=csv_string,
+                file_name="nfl_predictions.csv",
+                mime="text/csv"
+            )
 
 if __name__ == "__main__":
     main()
