@@ -6,6 +6,7 @@ from prediction_input import load_model, get_team_stats, prepare_input_data
 from sklearn.preprocessing import StandardScaler
 import joblib
 from injury_report import display_injury_report, get_injury_counts
+from odds import get_odds_for_team
 import csv
 import io
 
@@ -97,7 +98,13 @@ def display_predictions():
             home_color = get_color(home_injuries, max_injuries)
             away_color = get_color(away_injuries, max_injuries)
             
+            home_line, home_odds = get_odds_for_team(home_team)
+            away_line, away_odds = get_odds_for_team(away_team)
+            
+            odds_info = f"Odds: {home_team} {home_line} ({home_odds}), {away_team} {away_line} ({away_odds})"
+            
             st.markdown(f"### <span style='color:{away_color}'>{away_team}</span> ({away_injuries} injuries) @ <span style='color:{home_color}'>{home_team}</span> ({home_injuries} injuries) - {game_date}", unsafe_allow_html=True)
+            st.write(odds_info)
             
             try:
                 prediction = make_prediction(model, scaler, team_stats, home_team, away_team)
@@ -120,7 +127,11 @@ def display_predictions():
                     'Predicted Winner': winner,
                     'Predicted Point Difference': abs(point_difference),
                     'Home Team Injuries': home_injuries,
-                    'Away Team Injuries': away_injuries
+                    'Away Team Injuries': away_injuries,
+                    'Home Team Line': home_line,
+                    'Home Team Odds': home_odds,
+                    'Away Team Line': away_line,
+                    'Away Team Odds': away_odds
                 })
             except KeyError:
                 st.write("Unable to make prediction due to missing team data.")

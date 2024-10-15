@@ -33,11 +33,23 @@ for row in table.xpath('.//tr')[1:]:  # Skip the header row
         for cell in cells[1:12]:
             cell_content = cell.text_content().strip()
             if cell_content:
-                parts = cell_content.rsplit(maxsplit=1)
-                if len(parts) == 2:
-                    line, odds = parts
+                if cell_content.startswith(('+', '-')):
+                    parts = cell_content.split(None, 1)
+                    if len(parts) == 2:
+                        line, odds = parts
+                    else:
+                        line, odds = parts[0], ''
+                elif cell_content.lower() == 'n/a':
+                    line, odds = 'N/A', ''
                 else:
-                    line, odds = parts[0], ''
+                    line, odds = '', cell_content
+                
+                # Remove the "     +" string from odds
+                odds = odds.replace("     +", "").strip()
+                
+                # Replace 'even' odds with '100'
+                if odds.lower() == 'even':
+                    odds = '100'
             else:
                 line, odds = '', ''
             row_data.extend([line.strip(), odds.strip()])
@@ -62,3 +74,24 @@ print(df.head())
 # Optionally, save the DataFrame to a CSV file
 df.to_csv('nfl_odds.csv', index=False)
 print("Data saved to nfl_odds.csv")
+
+# Add this team name mapping dictionary
+team_name_mapping = {
+    'Cardinals': 'ARI', 'Falcons': 'ATL', 'Ravens': 'BAL', 'Bills': 'BUF',
+    'Panthers': 'CAR', 'Bears': 'CHI', 'Bengals': 'CIN', 'Browns': 'CLE',
+    'Cowboys': 'DAL', 'Broncos': 'DEN', 'Lions': 'DET', 'Packers': 'GB',
+    'Texans': 'HOU', 'Colts': 'IND', 'Jaguars': 'JAX', 'Chiefs': 'KC',
+    'Raiders': 'LV', 'Chargers': 'LAC', 'Rams': 'LAR', 'Dolphins': 'MIA',
+    'Vikings': 'MIN', 'Patriots': 'NE', 'Saints': 'NO', 'Giants': 'NYG',
+    'Jets': 'NYJ', 'Eagles': 'PHI', 'Steelers': 'PIT', '49ers': 'SF',
+    'Seahawks': 'SEA', 'Buccaneers': 'TB', 'Titans': 'TEN', 'Commanders': 'WAS'
+}
+
+# Function to get odds for a specific team
+def get_odds_for_team(team_code):
+    team_name = next((name for name, code in team_name_mapping.items() if code == team_code), None)
+    if team_name:
+        team_row = df[df['Team'] == team_name]
+        if not team_row.empty:
+            return team_row.iloc[0]['DraftKings Odds'], team_row.iloc[0]['DraftKings Line']
+    return None, None
