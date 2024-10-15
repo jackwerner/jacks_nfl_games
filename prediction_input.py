@@ -4,6 +4,7 @@ from xgboost import XGBRegressor
 from sklearn.preprocessing import StandardScaler
 from friendly_scrape import scrape_url_with_timestamp, urls
 from orchestration import standardize_team_names
+import joblib  # Add this import
 
 def load_model(model_path):
     model = XGBRegressor()
@@ -39,6 +40,9 @@ def main():
     # Load the model
     model = load_model('nfl_xgboost_model.json')
 
+    # Load the scaler used during training
+    scaler = joblib.load('nfl_standard_scaler.joblib')  # Add this line
+
     # Get team stats
     team_stats = get_team_stats()
     if team_stats is None:
@@ -55,10 +59,9 @@ def main():
     # Prepare input data
     input_data = prepare_input_data(home_team, away_team, team_stats)
 
-    # Scale the input data
-    scaler = StandardScaler()
-    input_data_scaled = scaler.fit_transform(input_data)
-
+    # Scale the input data using the loaded scaler
+    input_data_scaled = scaler.transform(input_data)  # Use transform instead of fit_transform
+    
     # Make prediction
     prediction = model.predict(input_data_scaled)[0]
 

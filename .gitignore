@@ -2,3 +2,5 @@ archive/
 datasets/
 model_eval.py
 model_train.py
+__pycache__/
+nfl_predictions_env/
