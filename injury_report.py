@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 from io import StringIO
+from collections import defaultdict
 
 def get_injury_report():
     # Fetch the latest injury report from the specified URL
@@ -81,5 +82,41 @@ def display_injury_report():
             st.write(f"Last Updated: {player['date_modified'].strftime('%Y-%m-%d %H:%M:%S')}")
             st.write("---")
 
+def get_injury_counts():
+    injury_data = get_injury_report()
+    depth_charts = get_depth_charts()
+
+    # Merge injury data with depth charts
+    merged_data = pd.merge(injury_data, depth_charts[['club_code', 'gsis_id', 'full_name', 'depth_team']], 
+                           on=['gsis_id','full_name'], how='left')
+
+    # Filter for depth_team 1 and last 7 days
+    last_7_days = pd.Timestamp.now(tz='UTC') - pd.Timedelta(days=7)
+    filtered_data = merged_data[(merged_data['depth_team'] == 1) & 
+                                (merged_data['date_modified'] >= last_7_days) &
+                                ((merged_data['report_primary_injury'].notna()) | 
+                                 (merged_data['report_secondary_injury'].notna()))]
+
+    # Remove duplicates, keeping only the most recent injury report for each player
+    filtered_data = filtered_data.sort_values('date_modified', ascending=False).drop_duplicates(subset=['full_name', 'club_code'], keep='first')
+
+    # Print debugging information
+    print(f"Total injuries: {len(filtered_data)}")
+    print(f"Unique players injured: {filtered_data['full_name'].nunique()}")
+    print(f"Date range: {filtered_data['date_modified'].min()} to {filtered_data['date_modified'].max()}")
+
+    # Count injuries per team
+    injury_counts = filtered_data['club_code'].value_counts().to_dict()
+
+    # Print team-wise injury counts
+    for team, count in injury_counts.items():
+        print(f"{team}: {count} injuries")
+
+    return injury_counts
+
 if __name__ == "__main__":
     display_injury_report()
+
+# Add this at the end of the file for testing
+if __name__ == "__main__":
+    print(get_injury_counts())
