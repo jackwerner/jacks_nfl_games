@@ -134,10 +134,13 @@ def display_predictions():
             
             csv_string = csv_buffer.getvalue()
             
+            # Get today's date in YYYY-MM-DD format
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            
             st.download_button(
                 label="Download Predictions as CSV",
                 data=csv_string,
-                file_name="nfl_predictions.csv",
+                file_name=f"nfl_predictions_{today_str}.csv",
                 mime="text/csv"
             )
 
